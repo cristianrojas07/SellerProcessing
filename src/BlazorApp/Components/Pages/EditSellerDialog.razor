@@ -1,0 +1,72 @@
+@using BlazorApp.Models
+@using MudBlazor
+@using Application.DTOs
+
+<MudDialog>
+    <DialogContent>
+        <MudForm @ref="form">
+            <MudTextField Label="First Name" @bind-Value="Model.FirstName" Required="true" />
+            <MudTextField Label="Last Name" @bind-Value="Model.LastName" Required="true" />
+            <MudTextField Label="Email" @bind-Value="Model.Email" Required="true" InputType="InputType.Email" />
+            <MudTextField Label="Phone" @bind-Value="Model.PhoneNumber" Required="true" InputType="InputType.Telephone"/>
+            <MudSelect T="string"
+                       Label="Region"
+                       @bind-Value="Model.Region"
+                       Required="true"
+                       AnchorOrigin="Origin.BottomCenter">
+                <MudSelectItem Value="@("Norte")">Norte</MudSelectItem>
+                <MudSelectItem Value="@("Sur")">Sur</MudSelectItem>
+                <MudSelectItem Value="@("Este")">Este</MudSelectItem>
+                <MudSelectItem Value="@("Oeste")">Oeste</MudSelectItem>
+            </MudSelect>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Save</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance? MudDialog { get; set; }
+
+    [Parameter] public SellerDto? SellerDto { get; set; }
+
+    private SellerFormModel Model { get; set; } = new();
+
+    private MudForm form = default!;
+
+    protected override void OnInitialized()
+    {
+        if (SellerDto is not null)
+        {
+            Model = new SellerFormModel
+            {
+                Id = SellerDto.Id,
+                FirstName = SellerDto.FirstName,
+                LastName = SellerDto.LastName,
+                Email = SellerDto.Email,
+                PhoneNumber = SellerDto.PhoneNumber,
+                Region = SellerDto.Region
+            };
+        }
+    }
+
+    private void Submit()
+    {
+        form.Validate();
+        if (!form.IsValid) return;
+
+        if (MudDialog is not null)
+        {
+            MudDialog.Close(DialogResult.Ok(Model));
+        }
+    }
+
+    void Cancel() {
+        if (MudDialog is not null)
+        {
+            MudDialog.Cancel();
+        }
+    }
+}

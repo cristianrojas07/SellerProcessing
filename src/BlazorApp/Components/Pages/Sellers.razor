@@ -1,0 +1,107 @@
+@page "/sellers"
+
+<MudText Typo="Typo.h3" GutterBottom="true">Sellers Management</MudText>
+
+<MudPaper Class="pa-4 mb-4 d-flex align-center gap-4">
+    <MudText Typo="Typo.h6">Actions:</MudText>
+
+    <MudButton Variant="Variant.Filled" 
+               Color="Color.Secondary" 
+               OnClick="OpenCreateDialog" 
+               StartIcon="@Icons.Material.Filled.Add"
+               Disabled="_isUploading"> Create Seller
+    </MudButton>
+
+    <MudFileUpload T="IBrowserFile" FilesChanged="UploadFiles" Accept=".xlsx">
+        <ActivatorContent>
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Disabled="_isUploading">
+                
+                @if (_isUploading)
+                {
+                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                    <MudText Class="ms-2">Processing...</MudText>
+                }
+                else
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.CloudUpload" Class="mr-2"/>
+                    <MudText>Upload Excel</MudText>
+                }
+            </MudButton>
+        </ActivatorContent>
+    </MudFileUpload>
+</MudPaper>
+
+<MudTable ServerData="@ServerReload" Dense="true" Hover="true" @ref="table">
+    <ToolBarContent>
+        <MudGrid Spacing="1" Class="align-center">
+            <MudItem xs="12" sm="2">
+                <MudSelect T="string" Label="Region" ValueChanged="@(r => OnFilterChanged("region", r))"
+                           Clearable="true" Margin="Margin.Dense" Dense="true">
+                    <MudSelectItem Value="@("Norte")">Norte</MudSelectItem>
+                    <MudSelectItem Value="@("Sur")">Sur</MudSelectItem>
+                    <MudSelectItem Value="@("Este")">Este</MudSelectItem>
+                    <MudSelectItem Value="@("Oeste")">Oeste</MudSelectItem>
+                </MudSelect>
+            </MudItem>
+
+            <MudItem xs="12" sm="2">
+                <MudTextField T="string" ValueChanged="@(s => OnFilterChanged("firstName", s))"
+                              Placeholder="First Name" Margin="Margin.Dense" DebounceInterval="500" />
+            </MudItem>
+
+            <MudItem xs="12" sm="2">
+                <MudTextField T="string" ValueChanged="@(s => OnFilterChanged("lastName", s))"
+                              Placeholder="Last Name" Margin="Margin.Dense" DebounceInterval="500" />
+            </MudItem>
+
+            <MudItem xs="12" sm="3">
+                <MudTextField T="string" ValueChanged="@(s => OnFilterChanged("email", s))"
+                              Placeholder="Email" Margin="Margin.Dense" DebounceInterval="500" />
+            </MudItem>
+
+            <MudItem xs="12" sm="3">
+                <MudTextField T="string" ValueChanged="@(s => OnFilterChanged("search", s))"
+                              DebounceInterval="500"
+                              Placeholder="General Search..."
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Search"
+                              Margin="Margin.Dense" />
+            </MudItem>
+        </MudGrid>
+    </ToolBarContent>
+
+    <HeaderContent>
+        <MudTh>First Name</MudTh>
+        <MudTh>Last Name</MudTh>
+        <MudTh>Email</MudTh>
+        <MudTh>Phone</MudTh>
+        <MudTh>Region</MudTh>
+        <MudTh>Created At</MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+
+    <RowTemplate>
+        <MudTd DataLabel="First Name">@context.FirstName</MudTd>
+        <MudTd DataLabel="Last Name">@context.LastName</MudTd>
+        <MudTd DataLabel="Email">@context.Email</MudTd>
+        <MudTd DataLabel="Phone">@context.PhoneNumber</MudTd>
+        <MudTd DataLabel="Region">@context.Region</MudTd>
+        <MudTd DataLabel="Created At">@context.CreatedAt.ToShortDateString()</MudTd>
+        <MudTd DataLabel="Actions">
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" OnClick="@(() => OpenEditDialog(context))" Size="Size.Small" />
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(() => DeleteSeller(context))" Size="Size.Small" />
+        </MudTd>
+    </RowTemplate>
+
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
