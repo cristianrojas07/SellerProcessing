@@ -12,10 +12,11 @@ services:
     networks:
       - seller-network
     healthcheck:
-      test: [ "CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Password123! -Q 'SELECT 1' || exit 1" ]
+      test: [ "CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P Password123! -Q 'SELECT 1' -C || exit 1" ]
       interval: 10s
-      retries: 5
-      start_period: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 20s
     volumes:
       - sql_data:/var/opt/mssql/data
 
@@ -44,6 +45,7 @@ services:
       dockerfile: src/Api/Dockerfile
     container_name: seller_system_api
     environment:
+      - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=SellerDb;User Id=sa;Password=Password123!;TrustServerCertificate=True;
       - RabbitMq__HostName=rabbitmq
       - RabbitMq__UserName=guest
