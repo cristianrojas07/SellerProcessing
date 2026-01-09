@@ -95,6 +95,17 @@ dotnet run --project src/BlazorApp
 
 ---
 
+## 🧪 Datos de Prueba
+
+Para facilitar la validación de la carga masiva y pruebas de estrés, el repositorio incluye archivos de ejemplo listos para usar:
+
+* **Ubicación:** Carpeta `SellerProcessing/data`
+* **Archivos disponibles:**
+    * 📄 **3,000 registros:** Ideal para una prueba rápida del flujo completo.
+    * 📄 **50,000 registros:** Diseñado para probar el rendimiento, la paginación y la estabilidad del Worker bajo carga.
+ 
+---
+
 ## 🏗️ Decisiones de Diseño
 
 * **Domain-Driven Design (DDD):** La lógica de negocio reside exclusivamente en el Dominio. Las entidades son ricas y validan sus propios invariantes.
